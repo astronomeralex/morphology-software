@@ -1,0 +1,6 @@
+./runcentroid.script $2
+combinecol wtstats all_cent.sout.centroid 3 > temp_centroid
+./makephotscript.pl temp_centroid $1 $2 -o allphot -scalefac 0.03
+read -p 'Run IRAF script'
+./processphot.pl temp_centroid $1 $2 -o allrad.$1.$2.dat
+rm temp_centroid

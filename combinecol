@@ -1,0 +1,63 @@
+#!/usr/bin/perl 
+
+use lib "/astro/grads/arh5361/code/perl";
+use MyCols;
+
+$description="Outputs columns (specified at the end) from file1 along with those of file2.";
+@names=("file1 (to be added from)","file2 (to be added to)","*columns");
+MyCols::PrintArgs(\@ARGV,\@names,$description,2,"combinecol");
+$options=$ARGV[scalar(@ARGV)-1];
+$options=MyCols::SetOpts($options,"combinecol");
+
+$file2=shift(@ARGV);
+$file1=shift(@ARGV);
+@colsprime=@ARGV;
+pop @colsprime;
+
+
+$lA=MyCols::ReadFile("$file1");
+@linesA = @$lA;
+
+$lB=MyCols::ReadFile("$file2");
+@linesB = @$lB;
+
+if (scalar(@linesA) != scalar(@linesB)) {
+  $length1=scalar(@linesA);
+  $length2=scalar(@linesB);
+  print "Files must be the same length (they are $length1, $length2)\n";
+  die;
+}
+
+if ($linesA[0]=~m/^#/ && $$options{'h'}!=1) {
+$firstline=$linesA[0];
+chop($firstline);
+$rest=join(" ",@colsprime);
+print "$firstline $rest";
+print "\n#\n";
+}
+for ($j=0;$j<scalar @colsprime;$j++) {
+  $colsprime[$j]=MyCols::GetColEval($linesB[0],$colsprime[$j]);
+}  
+
+$i=0;
+foreach (@linesA) {
+  if (MyCols::CheckSkip($_)) {
+    $i++;
+    next;
+  }
+  @cols=split(" ",$linesB[$i]);
+  $line=$_;
+  chop($line); 
+  print "$line ";
+  foreach $Bcol (@colsprime) {
+    if (defined($$options{'format'})) {
+      printf "$$options{'format'} ", $cols[$Bcol-1];
+    } else {
+      $coleval=eval($Bcol);
+      print "$coleval ";
+    }
+  }
+  print "\n";
+  $i++;
+}
+MyCols::Finish();
