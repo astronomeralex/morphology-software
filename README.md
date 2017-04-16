@@ -5,6 +5,8 @@ If you use this, please cite Hagen et al. (2017) https://arxiv.org/abs/1610.0116
 
 Everything is run in the directory with your files except for MyCols.pm and combinecols, which just need to be located in your path.
 
+The scripts rely on Perl, SExtractor, and IRAF.
+
 ##Directions
 NB: If you encounter an error or if a direction is unclear, please submit an issue or send me an email.
 * Make square cutouts of your sources using cutout.py or your favorite online cutout generator
@@ -15,5 +17,17 @@ NB: If you encounter an error or if a direction is unclear, please submit an iss
 * Now its time to edit the scripts
 	* In phot.script change the scale factor to your plate scale in arcsec/pixel. Edit the number after `-scalefac` in line 3
 	* In runcentroid.script edit the number of `-imcenter` to be center pixel of your image. Remember that this script assumed your cutouts are square.
-* Now run phot.script with the first input being the difference between each photometry aperture done to calculate the half-light radius, and the second being the maximum number of pixels. For instance `phot.script 0.5 20` would go out to 20 pixels in half pixel increments. When this script runs, you will have to run an iraf script called `allphot.cl`. Run this in iraf using `cl < allphot.cl`. The output from phot.script will be a file called allrad.0.5.20.dat (with the numbers changed depending on your settings) which will have the half-light radii in pixels. Each fits image will also have a corresponding phot file containing the photometry at each interval. This is useful for calculating half-ligh radii via other methods.
+	* In runcentroid.script edit the (-suf) to the suffix of the weight images. Generally I use wht.
+
+* Now run phot.script with the first input being the difference between each photometry aperture done to calculate the half-light radius, and the second being the maximum number of pixels. For instance `phot.script 0.5 20` would go out to 20 pixels in half pixel increments. When this script runs, you will have to run an iraf script called `allphot.cl`. Run this in iraf using `cl < allphot.cl`. The output from phot.script will be a file called allrad.0.5.20.dat (with the numbers changed depending on your settings) which will have the filename (column 1) and half-light radii in pixels (column 2). Each fits image will also have a corresponding phot file containing the photometry at each interval. This is useful for calculating half-ligh radii via other methods.
+        * before running the IRAF script allphot.cl, must epar phot task:
+                * interactive = no
+                * datapar = datb.par
+                * centerp = centerb.par
+                * fitskyp = skyb.par
+                * photpar = photb.par
+                * verify = no
+                * update = no
+                * NOTE: can use "unlearn phot" to restore default settings to phot
+
 * Now you can use `convert_allrad.py` to convert the pixel units to physical units, or using `morphology.py` to calculate half-light radius using eta or find the concentration index. Have fun!
