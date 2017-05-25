@@ -39,8 +39,6 @@ def cutout(filename, xc, yc, xw, yw, outfile, clobber=True, verbose=False):
         xc,yc - x and y coordinates in the fits files' coordinate system 
         xw,yw - x and y width in pixels 
         outfile - output file name
-
-        #how should i handle boundary cases? fill outside image with zeros?
     """
     if isinstance(filename,str):
         fitsfile = fits.open(filename)
@@ -58,9 +56,15 @@ def cutout(filename, xc, yc, xw, yw, outfile, clobber=True, verbose=False):
 
     xr = int(xw/2) #distance from center to edge to make below calculation easier
     yr = int(yw/2)
-
+    
+    #padding could have issues is xc isn't an int...should check
     xmin,xmax = numpy.max([0,xc-xr]),numpy.min([head['NAXIS1'],xc+xr])
+    xleftpad = xc - xmin - xr
+    xrightpad = xmax - xc - xr
     ymin,ymax = numpy.max([0,yc-yr]),numpy.min([head['NAXIS2'],yc+yr])
+    yleftpad = yc - ymin - yr
+    yrightpad = ymax - yc - yr
+    need_to_pad = np.any(np.array([xleftpad, xrightpad, yleftpad, yrightpad]) > 0)
 
     if xmax < 0 or ymax < 0:
         raise ValueError("Max Coordinate is outside of map: %f,%f." % (xmax,ymax))
@@ -69,13 +73,15 @@ def cutout(filename, xc, yc, xw, yw, outfile, clobber=True, verbose=False):
 
     head['CRPIX1']-=xmin 
     head['CRPIX2']-=ymin
-    head['NAXIS1']=int(xmax-xmin)
-    head['NAXIS2']=int(ymax-ymin)
+    head['NAXIS1']=int(2*xr)
+    head['NAXIS2']=int(2*yr)
 
     if head.get('NAXIS1') == 0 or head.get('NAXIS2') == 0:
         raise ValueError("Map has a 0 dimension: %i,%i." % (head.get('NAXIS1'),head.get('NAXIS2')))
 
     img = fitsfile[0].data[ymin:ymax,xmin:xmax]
+    if need_to_pad:
+        img = np.pad(img, ((yleftpad,yrightpad),(xleftpad, xrightpad)), 'constant', constant_values = 0)
     newfile = fits.PrimaryHDU(data=img,header=head)
     if verbose: print(("Cut image %s with dims %s to %s.  xrange: %f:%f, yrange: %f:%f" % (filename, file[0].data.shape,img.shape,xmin,xmax,ymin,ymax)))
 
