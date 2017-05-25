@@ -64,7 +64,7 @@ def cutout(filename, xc, yc, xw, yw, outfile, clobber=True, verbose=False):
     ymin,ymax = numpy.max([0,yc-yr]),numpy.min([head['NAXIS2'],yc+yr])
     yleftpad = yc - ymin - yr
     yrightpad = ymax - yc - yr
-    need_to_pad = np.any(np.array([xleftpad, xrightpad, yleftpad, yrightpad]) > 0)
+    need_to_pad = numpy.any(numpy.array([xleftpad, xrightpad, yleftpad, yrightpad]) > 0)
 
     if xmax < 0 or ymax < 0:
         raise ValueError("Max Coordinate is outside of map: %f,%f." % (xmax,ymax))
@@ -81,7 +81,7 @@ def cutout(filename, xc, yc, xw, yw, outfile, clobber=True, verbose=False):
 
     img = fitsfile[0].data[ymin:ymax,xmin:xmax]
     if need_to_pad:
-        img = np.pad(img, ((yleftpad,yrightpad),(xleftpad, xrightpad)), 'constant', constant_values = 0)
+        img = numpy.pad(img, ((yleftpad,yrightpad),(xleftpad, xrightpad)), 'constant', constant_values = 0)
     newfile = fits.PrimaryHDU(data=img,header=head)
     if verbose: print(("Cut image %s with dims %s to %s.  xrange: %f:%f, yrange: %f:%f" % (filename, file[0].data.shape,img.shape,xmin,xmax,ymin,ymax)))
 
