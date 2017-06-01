@@ -1,4 +1,4 @@
-#Morphology Software!
+# Morphology Software!
 Collection of morphology software from Bond et al. (2009 and others) and Hagen et al (2017)
 
 If you use this, please cite Hagen et al. (2017) https://arxiv.org/abs/1610.01163 and Bond et al. (2009) ApJ, 705, 639 http://adsabs.harvard.edu/abs/2009ApJ...705..639B
@@ -7,7 +7,7 @@ Everything is run in the directory with your files except for MyCols.pm and comb
 
 The scripts rely on Perl, SExtractor, and IRAF.
 
-##Directions
+## Directions
 NB: If you encounter an error or if a direction is unclear, please submit an issue or send me an email.
 * Make square cutouts of your sources using cutout.py or your favorite online cutout generator
 * Make a list of all the images you want to analyze using `ls *.fits > fitslist`
