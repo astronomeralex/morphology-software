@@ -81,7 +81,7 @@ def cutout(filename, xc, yc, xw, yw, outfile, clobber=True, verbose=False):
 
     img = fitsfile[0].data[ymin:ymax,xmin:xmax]
     if need_to_pad:
-        img = numpy.pad(img, ((yleftpad,yrightpad),(xleftpad, xrightpad)), 'constant', constant_values = 0)
+        img = numpy.pad(img, ((int(yleftpad),int(yrightpad)),(int(xleftpad), int(xrightpad))), 'constant', constant_values = 0)
     newfile = fits.PrimaryHDU(data=img,header=head)
     if verbose: print(("Cut image %s with dims %s to %s.  xrange: %f:%f, yrange: %f:%f" % (filename, file[0].data.shape,img.shape,xmin,xmax,ymin,ymax)))
 
