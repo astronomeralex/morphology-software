@@ -1,1 +1,1 @@
-./runsex_v1.01.pl -cl fitslist $1 centroid_v.sex all_cent.sout -imcenter 332 -suf wht
+./runsex_v1.01.pl -cl fitslist $1 centroid_v.sex all_cent.sout -imcenter 301 -suf wht

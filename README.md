@@ -13,9 +13,10 @@ NB: If you encounter an error or if a direction is unclear, please submit an iss
 * Make a list of all the images you want to analyze using `ls *.fits > fitslist`
 * Make fake weight images by generating a fits image with all ones in the data (you could use numpy's oneslike for this) and save one of these for each fits image you want to analyze. Have `_wht` at the end of the filename. So, `name.fits` has a weight image of `name_wht.fits`.
 * Make a list of the wht images using `ls *wht.fits > whtlist`
-* In IRAF run imstat on the wht images using `imstat whtlist > wtstats`
+* In IRAF run imstat on the wht images using `imstat @whtlist > wtstats`
 * Now its time to edit the scripts
 	* In phot.script change the scale factor to your plate scale in arcsec/pixel. Edit the number after `-scalefac` in line 3
+	* In datb.par change the scale factor to your plate scale in arcsec/pixel. Edit line 1
 	* In runcentroid.script edit the number of `-imcenter` to be center pixel of your image. Remember that this script assumed your cutouts are square.
 	* In runcentroid.script edit the (-suf) to the suffix of the weight images. Generally I use wht.
 

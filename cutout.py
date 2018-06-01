@@ -25,6 +25,7 @@ def make_cutouts(fitsfilename, RA, DEC, name, xw, yw, fits_memmap=False):
     fitswcs = wcs.WCS(fitsfilename)
     fitsfile = fits.open(fitsfilename,memmap = fits_memmap)
     xypix = fitswcs.all_world2pix(RA, DEC, 0)
+    #xypix = fitswcs.wcs_world2pix(RA,DEC,0)
     for i in  range(len(name)):
         try:
              cutout(fitsfile, xypix[0][i], xypix[1][i], xw, yw, name[i])
